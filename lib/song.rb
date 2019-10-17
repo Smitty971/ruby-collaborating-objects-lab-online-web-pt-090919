@@ -1,22 +1,29 @@
-
-
 class Song
+  attr_accessor :name, :artist
+  @@all = []
 
-    attr_reader :artist
+  def initialize(name)
+    @name = name
+    save
+  end
 
-    def initialize(name)
-        @name = name
-    end
+  def save
+    @@all << self
+  end
 
-    def artist=(artist)
-        @artist = artist
-        artist.songs << self
-    end
+  def self.all
+    @@all
+  end
 
-    # We would need this method if we were relying on the Song @@all variable inside our
-    # artist songs instance method
-    # def self.all
-    #     @@all
-    # end
+  def self.new_by_filename(filename)
+    artist, song = filename.split(" - ")
+    new_song = self.new(song)
+    new_song.artist_name = artist
+    new_song
+  end
 
+  def artist_name=(name)
+    self.artist = Artist.find_or_create_by_name(name)
+    artist.add_song(self)
+  end
 end
